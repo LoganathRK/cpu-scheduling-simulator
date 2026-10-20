@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Priority — CPU Scheduling Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="priority">
+
+<nav class="navbar">
+  <a class="nav-logo" href="index.html">⚙️ <div><div>CPU Sched</div><span>Simulator v1.0</span></div></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="fcfs.html">FCFS</a></li>
+    <li><a href="sjf.html">SJF</a></li>
+    <li><a href="priority.html" class="active">Priority</a></li>
+    <li><a href="roundrobin.html">Round Robin</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="page-wrapper">
+
+  <div class="page-header reveal">
+    <div class="page-header-icon" style="background:rgba(255,170,0,0.1);border:1px solid rgba(255,170,0,0.25);">🏆</div>
+    <div>
+      <h1 style="background:linear-gradient(135deg,#e8f0fe,#ffaa00);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+        Priority Scheduling
+      </h1>
+      <p>Non-Preemptive &nbsp;·&nbsp; Lower Number = Higher Priority</p>
+    </div>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div class="panel reveal">
+    <div class="panel-title">Algorithm Explanation</div>
+    <div class="explanation-text">
+      <p>
+        <strong style="color:var(--accent-warn)">Priority Scheduling</strong> assigns each process a priority number.
+        The CPU is allocated to the process with the <em>highest priority</em> (i.e., lowest priority number) in the ready queue.
+      </p>
+      <p>
+        In this simulator, <strong>lower priority number = higher importance</strong>.
+        When multiple processes have equal priority, they are scheduled in FCFS order (arrival time).
+      </p>
+      <p>
+        <strong>Problem:</strong> Low-priority processes may suffer from <em style="color:var(--accent-danger)">Indefinite Blocking (Starvation)</em>.
+        This can be solved using <em>Aging</em> — gradually increasing the priority of waiting processes.
+      </p>
+    </div>
+    <ul class="feature-list" style="margin-top:1rem;">
+      <li>Non-Preemptive</li>
+      <li>Priority Based</li>
+      <li>Lower # = Higher Priority</li>
+      <li>Starvation Possible</li>
+      <li>Aging as Fix</li>
+    </ul>
+  </div>
+
+  <!-- INPUT -->
+  <div class="panel reveal">
+    <div class="panel-title">Add Process</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="priPid">Process ID</label>
+        <input type="text" id="priPid" placeholder="e.g. P5" maxlength="8" />
+      </div>
+      <div class="form-group">
+        <label for="priArrival">Arrival Time</label>
+        <input type="number" id="priArrival" placeholder="0" min="0" />
+      </div>
+      <div class="form-group">
+        <label for="priBurst">Burst Time</label>
+        <input type="number" id="priBurst" placeholder="e.g. 5" min="1" />
+      </div>
+      <div class="form-group">
+        <label for="priPriority">Priority (1 = Highest)</label>
+        <input type="number" id="priPriority" placeholder="e.g. 2" min="1" />
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="priAddBtn" style="background:rgba(255,170,0,0.12);border-color:rgba(255,170,0,0.3);color:var(--accent-warn);">＋ Add Process</button>
+      <button class="btn btn-primary" id="priRunBtn" style="background:var(--accent-warn);box-shadow:0 0 20px rgba(255,170,0,0.25);">▶ Run Simulation</button>
+      <button class="btn btn-outline" id="priResetBtn">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- PROCESS LIST TABLE -->
+  <div class="panel reveal">
+    <div class="panel-title">Process Queue</div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Process</th>
+            <th>Arrival Time</th>
+            <th>Burst Time</th>
+            <th>Priority</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="priInputTable">
+          <tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:2rem;">No processes added yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="priResults" style="display:none;">
+
+    <div class="metrics-row reveal">
+      <div class="metric-card">
+        <span class="metric-label">Avg Waiting Time</span>
+        <span class="metric-value warn" id="priavgWT">—</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Avg Turnaround Time</span>
+        <span class="metric-value purple" id="priavgTAT">—</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Total Processes</span>
+        <span class="metric-value green" id="pritotalProc">—</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Total Time Units</span>
+        <span class="metric-value" id="pritotalTime">—</span>
+      </div>
+    </div>
+
+    <div class="panel reveal">
+      <div class="panel-title">Gantt Chart</div>
+      <div id="priGantt"><div class="empty-state"><p>Run simulation to see Gantt chart</p></div></div>
+    </div>
+
+    <div class="panel reveal">
+      <div class="panel-title">Scheduling Results</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Process</th>
+              <th>Arrival Time</th>
+              <th>Burst Time</th>
+              <th>Priority</th>
+              <th>Completion Time</th>
+              <th>Turnaround Time</th>
+              <th>Waiting Time</th>
+            </tr>
+          </thead>
+          <tbody id="priResultTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <p>CPU Scheduling Simulator &nbsp;·&nbsp; Operating Systems Project &nbsp;·&nbsp; Built with <span>♥</span></p>
+</footer>
+
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>

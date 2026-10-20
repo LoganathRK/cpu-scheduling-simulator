@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SJF — CPU Scheduling Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="sjf">
+
+<nav class="navbar">
+  <a class="nav-logo" href="index.html">⚙️ <div><div>CPU Sched</div><span>Simulator v1.0</span></div></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="fcfs.html">FCFS</a></li>
+    <li><a href="sjf.html" class="active">SJF</a></li>
+    <li><a href="priority.html">Priority</a></li>
+    <li><a href="roundrobin.html">Round Robin</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="page-wrapper">
+
+  <div class="page-header reveal">
+    <div class="page-header-icon" style="background:rgba(123,97,255,0.1);border:1px solid rgba(123,97,255,0.25);">⚡</div>
+    <div>
+      <h1 style="background:linear-gradient(135deg,#e8f0fe,#7b61ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+        Shortest Job First
+      </h1>
+      <p>Non-Preemptive &nbsp;·&nbsp; Optimal Average Waiting Time</p>
+    </div>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div class="panel reveal">
+    <div class="panel-title">Algorithm Explanation</div>
+    <div class="explanation-text">
+      <p>
+        <strong style="color:var(--accent-2)">Shortest Job First (SJF)</strong> selects the process with the
+        <em>smallest burst time</em> from the ready queue. It is proven to give the minimum average waiting time
+        among all non-preemptive algorithms.
+      </p>
+      <p>
+        At each scheduling event, the CPU picks the shortest available job. If two jobs have equal burst time,
+        FCFS order (arrival time) is used as a tiebreaker.
+      </p>
+      <p>
+        <strong>Drawback:</strong> It can cause <em style="color:var(--accent-warn)">Starvation</em> — long processes may
+        never get CPU time if short processes keep arriving. Requires knowing burst time in advance.
+      </p>
+    </div>
+    <ul class="feature-list" style="margin-top:1rem;">
+      <li>Non-Preemptive</li>
+      <li>Optimal Avg Wait</li>
+      <li>Burst-Time Based</li>
+      <li>Possible Starvation</li>
+      <li>Look-Ahead Required</li>
+    </ul>
+  </div>
+
+  <!-- INPUT -->
+  <div class="panel reveal">
+    <div class="panel-title">Add Process</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="sjfPid">Process ID</label>
+        <input type="text" id="sjfPid" placeholder="e.g. P5" maxlength="8" />
+      </div>
+      <div class="form-group">
+        <label for="sjfArrival">Arrival Time</label>
+        <input type="number" id="sjfArrival" placeholder="0" min="0" />
+      </div>
+      <div class="form-group">
+        <label for="sjfBurst">Burst Time</label>
+        <input type="number" id="sjfBurst" placeholder="e.g. 5" min="1" />
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="sjfAddBtn">＋ Add Process</button>
+      <button class="btn btn-primary" id="sjfRunBtn" style="background:var(--accent-2);box-shadow:0 0 20px rgba(123,97,255,0.25);">▶ Run Simulation</button>
+      <button class="btn btn-outline" id="sjfResetBtn">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- PROCESS LIST TABLE -->
+  <div class="panel reveal">
+    <div class="panel-title">Process Queue</div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Process</th>
+            <th>Arrival Time</th>
+            <th>Burst Time</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="sjfInputTable">
+          <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:2rem;">No processes added yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="sjfResults" style="display:none;">
+
+    <div class="metrics-row reveal">
+      <div class="metric-card">
+        <span class="metric-label">Avg Waiting Time</span>
+        <span class="metric-value" id="sjfavgWT">—</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Avg Turnaround Time</span>
+        <span class="metric-value purple" id="sjfavgTAT">—</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Total Processes</span>
+        <span class="metric-value green" id="sjftotalProc">—</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Total Time Units</span>
+        <span class="metric-value warn" id="sjftotalTime">—</span>
+      </div>
+    </div>
+
+    <div class="panel reveal">
+      <div class="panel-title">Gantt Chart</div>
+      <div id="sjfGantt"><div class="empty-state"><p>Run simulation to see Gantt chart</p></div></div>
+    </div>
+
+    <div class="panel reveal">
+      <div class="panel-title">Scheduling Results</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Process</th>
+              <th>Arrival Time</th>
+              <th>Burst Time</th>
+              <th>Completion Time</th>
+              <th>Turnaround Time</th>
+              <th>Waiting Time</th>
+            </tr>
+          </thead>
+          <tbody id="sjfResultTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <p>CPU Scheduling Simulator &nbsp;·&nbsp; Operating Systems Project &nbsp;·&nbsp; Built with <span>♥</span></p>
+</footer>
+
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>

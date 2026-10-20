@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Round Robin — CPU Scheduling Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body data-page="rr">
+
+<nav class="navbar">
+  <a class="nav-logo" href="index.html">⚙️ <div><div>CPU Sched</div><span>Simulator v1.0</span></div></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="fcfs.html">FCFS</a></li>
+    <li><a href="sjf.html">SJF</a></li>
+    <li><a href="priority.html">Priority</a></li>
+    <li><a href="roundrobin.html" class="active">Round Robin</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger"><span></span><span></span><span></span></div>
+</nav>
+
+<div class="page-wrapper">
+
+  <div class="page-header reveal">
+    <div class="page-header-icon" style="background:rgba(0,255,157,0.1);border:1px solid rgba(0,255,157,0.25);">🔄</div>
+    <div>
+      <h1 style="background:linear-gradient(135deg,#e8f0fe,#00ff9d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">
+        Round Robin
+      </h1>
+      <p>Preemptive &nbsp;·&nbsp; Time-Sharing &nbsp;·&nbsp; Fair Scheduling</p>
+    </div>
+  </div>
+
+  <!-- EXPLANATION -->
+  <div class="panel reveal">
+    <div class="panel-title">Algorithm Explanation</div>
+    <div class="explanation-text">
+      <p>
+        <strong style="color:var(--accent-3)">Round Robin (RR)</strong> is designed especially for time-sharing systems.
+        Each process gets a fixed time slice called a <em>Time Quantum (Q)</em>.
+      </p>
+      <p>
+        Processes are placed in a circular queue. Each gets the CPU for up to Q units.
+        If not finished, it is preempted and placed at the end of the queue. This continues until all processes complete.
+      </p>
+      <p>
+        <strong>Key Insight:</strong> Smaller quantum improves responsiveness but increases context switch overhead.
+        Larger quantum makes it behave more like FCFS. The <em style="color:var(--accent-3)">ideal quantum</em> balances both.
+      </p>
+    </div>
+    <ul class="feature-list" style="margin-top:1rem;">
+      <li>Preemptive</li>
+      <li>Time Quantum</li>
+      <li>No Starvation</li>
+      <li>Fair Scheduling</li>
+      <li>Context Switch Overhead</li>
+      <li>Good Response Time</li>
+    </ul>
+  </div>
+
+  <!-- INPUT -->
+  <div class="panel reveal">
+    <div class="panel-title">Configuration &amp; Add Process</div>
+
+    <!-- Time Quantum (prominent) -->
+    <div style="background:rgba(0,255,157,0.06);border:1px solid rgba(0,255,157,0.15);border-radius:var(--radius);padding:1.2rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap;">
+      <div>
+        <div style="font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent-3);margin-bottom:4px;">⏱ Time Quantum</div>
+        <div style="font-size:0.78rem;color:var(--text-muted);">CPU time allocated per process per cycle</div>
+      </div>
+      <div class="form-group" style="flex:0 0 120px;margin:0;">
+        <input type="number" id="rrQuantum" value="2" min="1" max="100"
+          style="font-size:1.3rem;font-weight:700;text-align:center;color:var(--accent-3);border-color:rgba(0,255,157,0.3);" />
+      </div>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label for="rrPid">Process ID</label>
+        <input type="text" id="rrPid" placeholder="e.g. P5" maxlength="8" />
+      </div>
+      <div class="form-group">
+        <label for="rrArrival">Arrival Time</label>
+        <input type="number" id="rrArrival" placeholder="0" min="0" />
+      </div>
+      <div class="form-group">
+        <label for="rrBurst">Burst Time</label>
+        <input type="number" id="rrBurst" placeholder="e.g. 5" min="1" />
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" id="rrAddBtn"
+        style="background:rgba(0,255,157,0.08);border-color:rgba(0,255,157,0.25);color:var(--accent-3);">＋ Add Process</button>
+      <button class="btn btn-primary" id="rrRunBtn"
+        style="background:var(--accent-3);color:#000;box-shadow:0 0 20px rgba(0,255,157,0.25);">▶ Run Simulation</button>
+      <button class="btn btn-outline" id="rrResetBtn">↺ Reset</button>
+    </div>
+  </div>
+
+  <!-- PROCESS LIST TABLE -->
+  <div class="panel reveal">
+    <div class="panel-title">Process Queue</div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Process</th>
+            <th>Arrival Time</th>
+            <th>Burst Time</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody id="rrInputTable">
+          <tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:2rem;">No processes added yet.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="rrResults" style="display:none;">
+
+    <div class="metrics-row reveal">
+      <div class="metric-card">
+        <span class="metric-label">Avg Waiting Time</span>
+        <span class="metric-value green" id="rravgWT">—</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Avg Turnaround Time</span>
+        <span class="metric-value purple" id="rravgTAT">—</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Total Processes</span>
+        <span class="metric-value" id="rrtotalProc">—</span>
+      </div>
+      <div class="metric-card">
+        <span class="metric-label">Total Time Units</span>
+        <span class="metric-value warn" id="rrtotalTime">—</span>
+      </div>
+    </div>
+
+    <div class="panel reveal">
+      <div class="panel-title">Gantt Chart</div>
+      <div id="rrGantt"><div class="empty-state"><p>Run simulation to see Gantt chart</p></div></div>
+    </div>
+
+    <div class="panel reveal">
+      <div class="panel-title">Scheduling Results</div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Process</th>
+              <th>Arrival Time</th>
+              <th>Burst Time</th>
+              <th>Completion Time</th>
+              <th>Turnaround Time</th>
+              <th>Waiting Time</th>
+            </tr>
+          </thead>
+          <tbody id="rrResultTable"></tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<footer>
+  <p>CPU Scheduling Simulator &nbsp;·&nbsp; Operating Systems Project &nbsp;·&nbsp; Built with <span>♥</span></p>
+</footer>
+
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>

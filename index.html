@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CPU Scheduling Simulator</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <a class="nav-logo" href="index.html">
+     <div><div>OS</div><span></span></div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="fcfs.html">FCFS</a></li>
+    <li><a href="sjf.html">SJF</a></li>
+    <li><a href="priority.html">Priority</a></li>
+    <li><a href="roundrobin.html">Round Robin</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="page-wrapper">
+  <section class="hero reveal">
+    <div class="hero-badge">WELCOME TO LOGAN's SCHEDULER</div>
+    <h1>CPU Scheduling<br/>Algorithm Simulator</h1>
+    <p>
+      Visualize and analyze how operating systems manage process execution.
+      Simulate four classic scheduling algorithms and compare their performance
+      metrics — Waiting Time, Turnaround Time, and more.
+    </p>
+  </section>
+
+  <!-- STATS BAR -->
+  <!-- <div class="stats-bar reveal">
+    <div class="stat-item">
+      <span class="stat-value">4</span>
+      <span class="stat-label">Algorithms</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value" id="statProcesses">∞</span>
+      <span class="stat-label">Max Processes</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">Live</span>
+      <span class="stat-label">Gantt Charts</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-value">Real</span>
+      <span class="stat-label">Time Metrics</span>
+    </div>
+  </div> -->
+
+  <!-- ALGORITHM CARDS -->
+  <div class="cards-grid">
+
+    <a class="algo-card reveal" href="fcfs.html" style="--card-color:#00d4ff;">
+      <div class="card-icon">🏁</div>
+      <div>
+        <div class="card-label">01 — Non-Preemptive</div>
+        <div class="card-title">First Come First Served</div>
+      </div>
+      <p class="card-desc">
+        The simplest scheduling algorithm. Processes are executed in the exact order they arrive. Easy to understand and implement.
+      </p>
+      <div class="card-arrow">Simulate →</div>
+    </a>
+
+    <a class="algo-card reveal" href="sjf.html" style="--card-color:#7b61ff;">
+      <div class="card-icon">⚡</div>
+      <div>
+        <div class="card-label">02 — Non-Preemptive</div>
+        <div class="card-title">Shortest Job First</div>
+      </div>
+      <p class="card-desc">
+        Optimal average waiting time algorithm. Selects the process with the shortest burst time from the ready queue.
+      </p>
+      <div class="card-arrow">Simulate →</div>
+    </a>
+
+    <a class="algo-card reveal" href="priority.html" style="--card-color:#ffaa00;">
+      <div class="card-icon">🏆</div>
+      <div>
+        <div class="card-label">03 — Non-Preemptive</div>
+        <div class="card-title">Priority Scheduling</div>
+      </div>
+      <p class="card-desc">
+        Each process is assigned a priority. The CPU is allocated to the process with the highest priority (lowest number).
+      </p>
+      <div class="card-arrow">Simulate →</div>
+    </a>
+
+    <a class="algo-card reveal" href="roundrobin.html" style="--card-color:#00ff9d;">
+      <div class="card-icon">🔄</div>
+      <div>
+        <div class="card-label">04 — Preemptive</div>
+        <div class="card-title">Round Robin</div>
+      </div>
+      <p class="card-desc">
+        Time-sharing algorithm. Each process gets a fixed time quantum. Designed for time-sharing systems with fairness.
+      </p>
+      <div class="card-arrow">Simulate →</div>
+    </a>
+
+  </div>
+
+  <!-- INFO SECTION -->
+  <!-- <div style="margin-top:3rem; display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:1.5rem;">
+
+    <div class="panel reveal">
+      <div class="panel-title">What is CPU Scheduling?</div>
+      <div class="explanation-text">
+        <p>CPU Scheduling is a process by which the OS determines which process in the ready queue gets the CPU next. It's a core function of the Process Scheduler.</p>
+        <p>The goal is to maximize CPU utilization and throughput while minimizing waiting time, response time, and turnaround time.</p>
+      </div>
+    </div>
+
+    <div class="panel reveal">
+      <div class="panel-title">Key Metrics Explained</div>
+      <div class="explanation-text">
+        <p><strong style="color:var(--accent)">Arrival Time</strong> — When the process enters the ready queue.</p>
+        <p><strong style="color:var(--accent-2)">Burst Time</strong> — CPU time required by the process.</p>
+        <p><strong style="color:var(--accent-3)">Turnaround Time</strong> — Completion − Arrival.</p>
+        <p><strong style="color:var(--accent-warn)">Waiting Time</strong> — Turnaround − Burst Time.</p>
+      </div>
+    </div>
+
+    <div class="panel reveal">
+      <div class="panel-title">Scheduling Criteria</div>
+      <ul class="feature-list">
+        <li>CPU Utilization</li>
+        <li>Throughput</li>
+        <li>Turnaround Time</li>
+        <li>Waiting Time</li>
+        <li>Response Time</li>
+        <li>Fairness</li>
+        <li>Starvation-Free</li>
+      </ul>
+    </div>
+
+  </div>
+</div> -->
+
+<footer>
+  <p>CPU Scheduling Simulator &nbsp;·&nbsp; LOGAN's WEBSITE &nbsp;·&nbsp; Built with <span>♥</span></p>
+</footer>
+
+<div id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>
